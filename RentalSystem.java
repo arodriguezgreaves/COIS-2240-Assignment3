@@ -1,12 +1,19 @@
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 public class RentalSystem {
+	public RentalSystem(){
+        loadData();
+    }
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
@@ -138,6 +145,68 @@ public void saveVehicle(Vehicle vehicle) {
         catch (IOException e) {
             System.out.println("A file write error occurred.");
             e.printStackTrace();
+        }
+    }
+    private void loadData(){
+        // load from vehicles.txt
+        Vehicle temp0 = null;
+        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream("vehicle.txt"))){
+            temp0 = (Vehicle)input.readObject();
+            vehicles.add(temp0);
+            input.close();
+        } catch (IOException e) {
+            System.out.println("A file read error occurred.");
+            e.printStackTrace();
+        } catch (ClassNotFoundException cnf){
+            System.out.println("Class not found.");
+            cnf.printStackTrace();
+        }
+
+
+        //load from customers
+        try(BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))){
+            String line;
+            while ((line = reader.readLine())!=null){
+                String parts [] = line.split(" ");
+                int ID = 0;
+                try{
+                    ID = Integer.parseInt(parts[2]);
+                }
+                catch(NumberFormatException ex){ex.printStackTrace();}
+                Customer temp = new Customer(ID, parts[5]);
+                customers.add(temp);
+            }
+        }
+        catch(IOException e){
+            System.out.println("A file read error occurred.");
+  	          e.printStackTrace();
+        }
+
+        //load to rental record
+        try(BufferedReader reader = new BufferedReader(new FileReader("rental_record.txt"))){
+            String line2;
+            while ((line2 = reader.readLine())!=null){
+                String parts1 [] = line2.split(" ");
+                String recordType = parts1[0];
+                String plate = parts1[3];
+                String customer = parts1[6];
+                String date = parts1[9];
+                String amount = parts1[12];
+
+                Vehicle ve = new Vehicle() {};
+                ve = findVehicleByPlate(plate);
+                Customer cu = findCustomerByName(customer);
+                LocalDate ld = LocalDate.parse(date);
+                String amount1 = amount.replace("$", "");
+                double am = Double.parseDouble(amount1);
+
+                //ve,cu,da,am,status
+                    rentalHistory.addRecord(new RentalRecord(ve,cu,ld,am,recordType));    
+            }
+        }
+        catch(IOException e){
+            System.out.println("A file read error occurred.");
+  	          e.printStackTrace();
         }
     }
 }
