@@ -1,6 +1,10 @@
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
@@ -9,10 +13,16 @@ public class RentalSystem {
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        saveVehicle(vehicle);
     }
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        try {
+            saveCustomer(customer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
@@ -20,6 +30,7 @@ public class RentalSystem {
             vehicle.setStatus(Vehicle.VehicleStatus.RENTED);
             rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, amount, "RENT"));
             System.out.println("Vehicle rented to " + customer.getCustomerName());
+            saveRecord(new RentalRecord(vehicle, customer, date, amount, "RENT"));
         }
         else {
             System.out.println("Vehicle is not available for renting.");
@@ -31,6 +42,7 @@ public class RentalSystem {
             vehicle.setStatus(Vehicle.VehicleStatus.AVAILABLE);
             rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
             System.out.println("Vehicle returned by " + customer.getCustomerName());
+            saveRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
         }
         else {
             System.out.println("Vehicle is not rented.");
@@ -88,5 +100,44 @@ public class RentalSystem {
             if (c.getCustomerName().equalsIgnoreCase(name))
                 return c;
         return null;
+    }
+    
+public void saveVehicle(Vehicle vehicle) {
+    	
+    	try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("vehicle.txt"))) {
+            out.writeObject(vehicle);
+            out.close();
+    	}
+    	
+    	catch (IOException e) {
+    	      System.out.println("A file write error occurred.");
+    	      e.printStackTrace();
+    	}
+    }
+    
+    public void saveCustomer(Customer customer) throws IOException {
+  	
+        try (FileWriter myWriter = new FileWriter("customers.txt");){
+            myWriter.write("\n"+customer.toString());
+            myWriter.close();
+        }
+    
+        catch (IOException e) {
+            System.out.println("A file write error occurred.");
+            e.printStackTrace();
+        }
+    }
+    
+    public void saveRecord(RentalRecord record) {
+    	
+        try (FileWriter myWriter = new FileWriter("rental_record.txt");){
+            myWriter.write(record.toString());
+            myWriter.close();
+        }
+    
+        catch (IOException e) {
+            System.out.println("A file write error occurred.");
+            e.printStackTrace();
+        }
     }
 }
