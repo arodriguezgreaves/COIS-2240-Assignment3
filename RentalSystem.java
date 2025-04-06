@@ -10,6 +10,10 @@ public class RentalSystem {
     public RentalSystem(){
         loadData();
     }
+    
+    //Singleton instance
+    private static RentalSystem instance;
+    
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
@@ -28,6 +32,13 @@ public class RentalSystem {
         }
     }
 
+    public static RentalSystem getInstance() {
+        if (instance == null) {
+            instance = new RentalSystem();
+        }
+        return instance;
+    }
+    
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
         if (vehicle.getStatus() == Vehicle.VehicleStatus.AVAILABLE) {
             vehicle.setStatus(Vehicle.VehicleStatus.RENTED);
