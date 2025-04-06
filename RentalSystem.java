@@ -160,14 +160,14 @@ public void saveVehicle(Vehicle vehicle) {
 
                 Vehicle.VehicleStatus stat = Vehicle.VehicleStatus.valueOf(status);
 
-                if (determ == "Seats:"){
+                if (determ.equals("Seats:")){
                     int se = Integer.parseInt(typeS);
                     Car temp = new Car(make, model, yr, se);
                     temp.setLicensePlate(plate);
                     temp.setStatus(stat);
                     vehicles.add(temp);
                 }
-                else if (determ == "Sidecar:") {
+                else if (determ.equals("Sidecar:")) {
                     boolean sidecar; 
                     if (typeS == "true"){
                         sidecar=true;
@@ -180,8 +180,8 @@ public void saveVehicle(Vehicle vehicle) {
                     temp.setStatus(stat);
                     vehicles.add(temp);
                 }
-                else if (determ == "Cargo Capacity:"){
-                    int cap = Integer.parseInt(typeS);
+                else if (determ.equals("CargoCapacity:")){
+                	Double cap = Double.parseDouble(typeS);
                     Truck temp = new Truck(make, model, yr, cap);
                     temp.setLicensePlate(plate);
                     temp.setStatus(stat);
