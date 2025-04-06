@@ -111,7 +111,7 @@ public class RentalSystem {
     
 public void saveVehicle(Vehicle vehicle) {
     	
-    	try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("vehicle.txt"))) {
+    	try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("vehicle.txt",true))) {
             out.writeObject(vehicle);
             out.close();
     	}
@@ -124,7 +124,7 @@ public void saveVehicle(Vehicle vehicle) {
     
     public void saveCustomer(Customer customer) throws IOException {
   	
-        try (FileWriter myWriter = new FileWriter("customers.txt");){
+        try (FileWriter myWriter = new FileWriter("customers.txt",true)){
             myWriter.write("\n"+customer.toString());
             myWriter.close();
         }
@@ -137,7 +137,7 @@ public void saveVehicle(Vehicle vehicle) {
     
     public void saveRecord(RentalRecord record) {
     	
-        try (FileWriter myWriter = new FileWriter("rental_record.txt");){
+        try (FileWriter myWriter = new FileWriter("rental_record.txt",true)){
             myWriter.write(record.toString());
             myWriter.close();
         }
