@@ -1,5 +1,6 @@
 
-public abstract class Vehicle{
+
+public abstract class Vehicle {
     private String licensePlate;
     private String make;
     private String model;
@@ -12,11 +13,13 @@ public abstract class Vehicle{
     	if (make == null || make.isEmpty())
     		this.make = null;
     	else
-    		this.make = capitalize(make);    	
+    		this.make = capitalize(make);
+    	
     	if (model == null || model.isEmpty())
     		this.model = null;
     	else
-    		this.model = capitalize(model);    	
+    		this.model = capitalize(model);
+    	
         this.year = year;
         this.status = VehicleStatus.AVAILABLE;
         this.licensePlate = null;
@@ -48,6 +51,7 @@ public abstract class Vehicle{
         return "| " + licensePlate + " | " + make + " | " + model + " | " + year + " | " + status + " |";
     }
     
+    //helper method for vechicle constructor
     private String capitalize(String input) {
     	return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
     }

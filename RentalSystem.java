@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class RentalSystem {
-	public RentalSystem(){
+    public RentalSystem(){
         loadData();
     }
     private List<Vehicle> vehicles = new ArrayList<>();
@@ -105,22 +105,22 @@ public class RentalSystem {
         return null;
     }
     
-public void saveVehicle(Vehicle vehicle) {
-		try (FileWriter myWriter = new FileWriter("vehicle.txt",true)){
-        	myWriter.write(vehicle.getInfo()+"\n");
-        	myWriter.close();
-    	}
-
-    	catch (IOException e) {
-        	System.out.println("A file write error occurred.");
-        	e.printStackTrace();
-     	}
+    public void saveVehicle(Vehicle vehicle) {
+    	try (FileWriter myWriter = new FileWriter("vehicle.txt",true)){
+            myWriter.write(vehicle.getInfo()+"\n");
+            myWriter.close();
+        }
+    
+        catch (IOException e) {
+            System.out.println("A file write error occurred.");
+            e.printStackTrace();
+        }
     }
     
     public void saveCustomer(Customer customer) throws IOException {
   	
         try (FileWriter myWriter = new FileWriter("customers.txt",true)){
-            myWriter.write(customer.toString());
+            myWriter.write(customer.toString()+"\n");
             myWriter.close();
         }
     
@@ -133,7 +133,7 @@ public void saveVehicle(Vehicle vehicle) {
     public void saveRecord(RentalRecord record) {
     	
         try (FileWriter myWriter = new FileWriter("rental_record.txt",true)){
-            myWriter.write(record.toString());
+            myWriter.write(record.toString()+"\n");
             myWriter.close();
         }
     
@@ -142,9 +142,10 @@ public void saveVehicle(Vehicle vehicle) {
             e.printStackTrace();
         }
     }
+
     private void loadData(){
         // load from vehicles.txt
-    	try(BufferedReader reader = new BufferedReader(new FileReader("vehicle.txt"))){
+        try(BufferedReader reader = new BufferedReader(new FileReader("vehicle.txt"))){
             String line1;
             while ((line1 = reader.readLine())!=null){
                 String parts2 [] = line1.split(" ");
@@ -181,7 +182,7 @@ public void saveVehicle(Vehicle vehicle) {
                     vehicles.add(temp);
                 }
                 else if (determ.equals("CargoCapacity:")){
-                	Double cap = Double.parseDouble(typeS);
+                    Double cap = Double.parseDouble(typeS);
                     Truck temp = new Truck(make, model, yr, cap);
                     temp.setLicensePlate(plate);
                     temp.setStatus(stat);
@@ -193,7 +194,6 @@ public void saveVehicle(Vehicle vehicle) {
             System.out.println("A file read error occurred.");
   	          e.printStackTrace();
         }
-
 
         //load from customers
         try(BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))){
