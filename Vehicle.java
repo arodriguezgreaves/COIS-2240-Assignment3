@@ -1,5 +1,5 @@
-import java.io.Serializable;
-public abstract class Vehicle implements Serializable{
+
+public abstract class Vehicle{
     private String licensePlate;
     private String make;
     private String model;

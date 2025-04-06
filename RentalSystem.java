@@ -2,13 +2,9 @@ import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 public class RentalSystem {
 	public RentalSystem(){
@@ -110,22 +106,21 @@ public class RentalSystem {
     }
     
 public void saveVehicle(Vehicle vehicle) {
-    	
-    	try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("vehicle.txt",true))) {
-            out.writeObject(vehicle);
-            out.close();
+		try (FileWriter myWriter = new FileWriter("vehicle.txt",true)){
+        	myWriter.write(vehicle.getInfo()+"\n");
+        	myWriter.close();
     	}
-    	
+
     	catch (IOException e) {
-    	      System.out.println("A file write error occurred.");
-    	      e.printStackTrace();
-    	}
+        	System.out.println("A file write error occurred.");
+        	e.printStackTrace();
+     	}
     }
     
     public void saveCustomer(Customer customer) throws IOException {
   	
         try (FileWriter myWriter = new FileWriter("customers.txt",true)){
-            myWriter.write("\n"+customer.toString());
+            myWriter.write(customer.toString());
             myWriter.close();
         }
     
@@ -149,17 +144,54 @@ public void saveVehicle(Vehicle vehicle) {
     }
     private void loadData(){
         // load from vehicles.txt
-        Vehicle temp0 = null;
-        try (ObjectInputStream input = new ObjectInputStream(new FileInputStream("vehicle.txt"))){
-            temp0 = (Vehicle)input.readObject();
-            vehicles.add(temp0);
-            input.close();
-        } catch (IOException e) {
+    	try(BufferedReader reader = new BufferedReader(new FileReader("vehicle.txt"))){
+            String line1;
+            while ((line1 = reader.readLine())!=null){
+                String parts2 [] = line1.split(" ");
+                String plate = parts2[1];
+                String make = parts2[3];
+                String model = parts2[5];
+                String year = parts2[7];
+                String status = parts2[9];
+                String determ = parts2[12];
+                String typeS = parts2[13];
+
+                int yr = Integer.parseInt(year);
+
+                Vehicle.VehicleStatus stat = Vehicle.VehicleStatus.valueOf(status);
+
+                if (determ == "Seats:"){
+                    int se = Integer.parseInt(typeS);
+                    Car temp = new Car(make, model, yr, se);
+                    temp.setLicensePlate(plate);
+                    temp.setStatus(stat);
+                    vehicles.add(temp);
+                }
+                else if (determ == "Sidecar:") {
+                    boolean sidecar; 
+                    if (typeS == "true"){
+                        sidecar=true;
+                    }
+                    else{
+                        sidecar=false;
+                    }
+                    Motorcycle temp = new Motorcycle(make, model, yr, sidecar);
+                    temp.setLicensePlate(plate);
+                    temp.setStatus(stat);
+                    vehicles.add(temp);
+                }
+                else if (determ == "Cargo Capacity:"){
+                    int cap = Integer.parseInt(typeS);
+                    Truck temp = new Truck(make, model, yr, cap);
+                    temp.setLicensePlate(plate);
+                    temp.setStatus(stat);
+                    vehicles.add(temp);
+                }
+            }
+        }
+        catch(IOException e){
             System.out.println("A file read error occurred.");
-            e.printStackTrace();
-        } catch (ClassNotFoundException cnf){
-            System.out.println("Class not found.");
-            cnf.printStackTrace();
+  	          e.printStackTrace();
         }
 
 
