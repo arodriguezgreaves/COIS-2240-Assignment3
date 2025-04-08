@@ -18,19 +18,31 @@ public class RentalSystem {
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
 
-    public void addVehicle(Vehicle vehicle) {
+    public boolean addVehicle(Vehicle vehicle) {
+     	
+        if (findVehicleByPlate(vehicle.getLicensePlate()) != null) {
+            System.out.println("Error: Vehicle with license plate" + vehicle.getLicensePlate() + "already exists.");
+            return false;
+        }
         vehicles.add(vehicle);
         saveVehicle(vehicle);
+        return true;
     }
 
-    public void addCustomer(Customer customer) {
-        customers.add(customer);
-        try {
-            saveCustomer(customer);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+public boolean addCustomer(Customer customer) {
+     	
+        if (findCustomerById(customer.getCustomerId()) != null) {
+            System.out.println("Error: Customer with ID" + customer.getCustomerId() + "already exists.");
+            customers.add(customer);
+                try {
+                    saveCustomer(customer);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return false;
         }
-    }
 
     public static RentalSystem getInstance() {
         if (instance == null) {
@@ -51,12 +63,12 @@ public class RentalSystem {
         }
     }
 
-    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double extraFees) {
+    public void returnVehicle(Vehicle vehicle, Customer customer, LocalDate date, double returnFees) {
         if (vehicle.getStatus() == Vehicle.VehicleStatus.RENTED) {
-            vehicle.setStatus(Vehicle.VehicleStatus.AVAILABLE);
-            rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
+            vehicle.setStatus(Vehicle.VehicleStatus.AVAILABLE);  // Vehicle status changes to available
+             rentalHistory.addRecord(new RentalRecord(vehicle, customer, date, returnFees, "RETURN"));
             System.out.println("Vehicle returned by " + customer.getCustomerName());
-            saveRecord(new RentalRecord(vehicle, customer, date, extraFees, "RETURN"));
+            saveRecord(new RentalRecord(vehicle, customer, date, returnFees, "RETURN"));
         }
         else {
             System.out.println("Vehicle is not rented.");
