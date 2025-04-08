@@ -32,17 +32,19 @@ public class RentalSystem {
 
 public boolean addCustomer(Customer customer) {
      	
-        if (findCustomerById(customer.getCustomerId()) != null) {
-            System.out.println("Error: Customer with ID" + customer.getCustomerId() + "already exists.");
-            customers.add(customer);
-                try {
-                    saveCustomer(customer);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return false;
+	if (findCustomerById(customer.getCustomerId()) != null) {
+        System.out.println("Error: Customer with ID" + customer.getCustomerId() + "already exists.");
         }
+    else{
+        customers.add(customer);
+            try {
+                saveCustomer(customer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 
     public static RentalSystem getInstance() {
         if (instance == null) {
